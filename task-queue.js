@@ -81,21 +81,13 @@ function TaskQueue() {
 	}
 	
 	const processTask = function () {
-		if (!executing)
-			return;
-		
-		if (shouldStop) {
+		if (!executing || shouldStop || tasks.length < 1) { 
 			resolve(tasksResults);
 			return;
 		}
 		
-		if (tasks.length < 1)
-			resolve(tasksResults);
-		
-		const task = tasks[0];
+		const taskResult = tasks[0]();
 		tasks = tasks.slice(1);
-		
-		const taskResult = task();
 		
 		if (taskResult instanceof Promise) 
 			taskResult.then((result) => {
